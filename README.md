@@ -2,23 +2,19 @@
 
 ## Overview
 
-TODO: Write a project description
+This project implements a game in which we are an evil circle that is trying to
+eat all of the other circles roaming around the screen. This was a practice in
+more advanced JavaScript.
+
+## How to Run
+To run this game on your machine, follow these simple steps:
+1. Clone this repository onto your local machine.
+2. Go to the directory in which the local version exists.
+3. Open the folder in VSCode.
+4. Open the command palette and select "Live Preview: Start Server".
+5. Click the icon in the top right with the horizontal lines and select open in browser.
+6. Play the game! (Medium and hard mouse difficulty are not fully functional, I recommend easy for the mouse).
 
 ## Sources and Credits
 
-TODO: You must credit the sources and authors of any code, libraries, or other
-assets you use in your project. If you leave this section blank, your project
-will be considered in violation of the Academic Honesty policy unless you truly
-created everything from scratch with no outside help. If you need to use a
-source that you cannot credit (e.g. a classmate's work), you must get explicit
-permission from your instructor.
-
-A simple bulleted list below is sufficient. For example:
-
-- Bootstrap: https://getbootstrap.com/
-- jQuery: https://jquery.com/
-- Background image: https://unsplash.com/photos/...
-- Sound effects: https://freesound.org/people/...
-- Icons: https://fontawesome.com/
-- Fonts: https://fonts.google.com/
-- etc.
+- Hiding first page: ([shecodes.io](https://www.shecodes.io/athena/2942-hiding-html-elements-with-javascript-code#:~:text=This%20can%20be%20accomplished%20by,element%20in%20the%20JavaScript%20code.))

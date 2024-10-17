@@ -29,28 +29,33 @@ easyButton.addEventListener('click', function() {
   difficulty = "easy";
   console.log('easy')
 });
+
 medButton.addEventListener('click', function() {
   difficulty = "medium";
   console.log('medium')
 });
+
 hardButton.addEventListener('click', function() {
   difficulty = "hard";
   console.log('hard')
 });
+
 mouseButton.addEventListener('click', function() {
   mouseControl = true;
   keyControl = false;
   console.log('mouse control')
   console.log('mouse: ' + mouseControl +', keyboard: ' + keyControl)
 });
+
 keyButton.addEventListener('click', function() {
   keyControl = true;
   mouseControl = false;
   console.log('keyboard control')
   console.log('mouse: ' + mouseControl +', keyboard: ' + keyControl)
 });
+
 startButton.addEventListener('click', function() {
-  if ((keyControl || mouseControl) && (difficulty != false)) {
+  if ((keyControl || mouseControl)) {
     console.log('starting...')
     // gameRunning = true;
     splashScreen.style.display = 'none';
