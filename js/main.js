@@ -1,14 +1,97 @@
+const title = document.getElementById('title');
 var scoreLabel = document.getElementById('score');
+
+// Buttons
+const splashScreen = document.getElementById('splash');
+const easyButton = document.getElementById('easy');
+const medButton = document.getElementById('medium');
+const hardButton = document.getElementById('hard');
+const mouseButton = document.getElementById('mouse');
+const keyButton = document.getElementById('keyboard');
+const startButton = document.getElementById('start');
+
+// Game Variables
 var numBalls = 0;
+var mouseControl = false;
+var keyControl = false;
+var difficulty = "medium";
+var evilCircle;
+
+const EASY_VELOCITY = 50;
+const EASY_SIZE = 30;
+const MED_VELOCITY = 20;
+const MED_SIZE = 15;
+const HARD_VELOCITY = 10;
+const HARD_SIZE = 5;
+
+// Get options
+easyButton.addEventListener('click', function() {
+  difficulty = "easy";
+  console.log('easy')
+});
+medButton.addEventListener('click', function() {
+  difficulty = "medium";
+  console.log('medium')
+});
+hardButton.addEventListener('click', function() {
+  difficulty = "hard";
+  console.log('hard')
+});
+mouseButton.addEventListener('click', function() {
+  mouseControl = true;
+  keyControl = false;
+  console.log('mouse control')
+  console.log('mouse: ' + mouseControl +', keyboard: ' + keyControl)
+});
+keyButton.addEventListener('click', function() {
+  keyControl = true;
+  mouseControl = false;
+  console.log('keyboard control')
+  console.log('mouse: ' + mouseControl +', keyboard: ' + keyControl)
+});
+startButton.addEventListener('click', function() {
+  if ((keyControl || mouseControl) && (difficulty != false)) {
+    console.log('starting...')
+    // gameRunning = true;
+    splashScreen.style.display = 'none';
+    title.hidden = false;
+    scoreLabel.hidden = false;
+     
+    ctx = canvas.getContext("2d");
+
+    width = (canvas.width = window.innerWidth);
+    height = (canvas.height = window.innerHeight);
+
+    while (balls.length < 25) {
+      const size = random(10, 20);
+      const ball = new Ball(
+        // ball position always drawn at least one ball width
+        // away from the edge of the canvas, to avoid drawing errors
+        random(0 + size, width - size),
+        random(0 + size, height - size),
+        random(-7, 7),
+        random(-7, 7),
+        randomRGB(),
+        size
+      );
+    
+      balls.push(ball);
+      numBalls++;
+      updateScore();
+    }
+    
+    evilCircle = new EvilCircle(50, 50);
+
+    loop();
+  }
+});
 
 // set up canvas
-
-const canvas = document.querySelector("canvas");
-const ctx = canvas.getContext("2d");
-
-const width = (canvas.width = window.innerWidth);
-const height = (canvas.height = window.innerHeight);
-
+var canvas = document.querySelector("canvas");
+var ctx;
+var width;
+var height;
+ 
 // function to generate random number
 
 function random(min, max) {
@@ -35,28 +118,80 @@ class Shape {
   }
 }
 
+
 class EvilCircle extends Shape {
   constructor(x, y) {
-    super(x, y, 20, 20);
+    switch (difficulty) {
+      case "easy":
+        super(x, y, EASY_VELOCITY, EASY_VELOCITY);
+        break;
+      case "medium":
+        super(x, y, MED_VELOCITY, MED_VELOCITY);
+        break;
+      case "hard":
+        super(x, y, HARD_VELOCITY, HARD_VELOCITY);
+        break;
+      default:
+        super(x, y, 20, 20);
+        break;
+    }
+    
     this.color = 'rgb(255, 255, 255)';
-    this.size = 10;
-
-    window.addEventListener("keydown", (e) => {
-      switch (e.key) {
-        case "a":
-          this.x -= this.velX;
+    switch (difficulty) {
+      case "easy":
+        this.size = EASY_SIZE;
+        break;
+      case "medium":
+        this.size = MED_SIZE;
+        break;
+      case "hard":
+        this.size = HARD_SIZE;
+        break;
+    }
+    if (keyControl) {
+      window.addEventListener("keydown", (e) => {
+        switch (e.key) {
+          case "a":
+            this.x -= this.velX;
+            break;
+          case "d":
+            this.x += this.velX;
+            break;
+          case "w":
+            this.y -= this.velY;
+            break;
+          case "s":
+            this.y += this.velY;
+            break;
+        }
+      });
+    } else if (mouseControl) {
+      switch (difficulty) {
+        case "easy":
+          window.addEventListener('mousemove', (e) => {
+            this.x = e.clientX;
+            this.y = e.clientY;
+          });
           break;
-        case "d":
-          this.x += this.velX;
+        case "medium":
+        case "hard":
+          window.addEventListener('mousemove', (e) => {
+            if (this.x < e.clientX) {
+              this.x += this.velX;
+            } else if (this.x > e.clientX) {
+              this.x -= this.velX;
+            } else if (this.y < e.clientY) {
+              this.y += this.velY;
+            } else if (this.y > e.clientY) {
+              this.y -= this.velY;
+            }
+          });
           break;
-        case "w":
-          this.y -= this.velY;
-          break;
-        case "s":
-          this.y += this.velY;
-          break;
+        default:
+          console.log("error");
       }
-    });
+      
+    }
   }
 
   draw() {
@@ -85,6 +220,7 @@ class EvilCircle extends Shape {
     }
   }
 
+  
   collisionDetect() {
     for (const ball of balls) {
       if (ball.exists) {
@@ -107,6 +243,7 @@ class Ball extends Shape {
     super(x, y, velX, velY);
     this.color = color;
     this.size = size;
+
   }
 
   draw() {
@@ -153,28 +290,10 @@ class Ball extends Shape {
 }
 
 const balls = [];
-
-while (balls.length < 25) {
-  const size = random(10, 20);
-  const ball = new Ball(
-    // ball position always drawn at least one ball width
-    // away from the edge of the canvas, to avoid drawing errors
-    random(0 + size, width - size),
-    random(0 + size, height - size),
-    random(-7, 7),
-    random(-7, 7),
-    randomRGB(),
-    size
-  );
-
-  balls.push(ball);
-  numBalls++;
-  updateScore();
-}
-
-const evilCircle = new EvilCircle(50, 50);
+var won = false;
 
 function loop() {
+
   ctx.fillStyle = "rgba(0, 0, 0, 0.25)";
   ctx.fillRect(0, 0, width, height);
 
@@ -191,6 +310,11 @@ function loop() {
   }
 
   requestAnimationFrame(loop);
+
+  if (numBalls == 0 && !won) {
+    alert("Congratulations! You won! Close this dialogue and refresh the page to play again!");
+    won = true;
+  }
 }
 
-loop();
+
